@@ -19,7 +19,7 @@ const penaltyTimeEl = document.querySelector('.penalty-time');
 const playAgainBtn = document.querySelector('.play-again');
 
 // Equations
-
+let questionAmount = 0;
 let equationsArray = [];
 
 // Game Page
@@ -32,12 +32,19 @@ const wrongFormat = [];
 
 // Scroll
 
+//Get random number up to a max number
+function getRandomInt(max){
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 // Create Correct/Incorrect Random Equations
 function createEquations() {
   // Randomly choose how many correct equations there should be
-  // const correctEquations = 
+  const correctEquations = getRandomInt(questionAmount);
+  console.log('correct equations ', correctEquations);
   // Set amount of wrong equations
-  // const wrongEquations = 
+  const wrongEquations = questionAmount - correctEquations;
+  console.log('wrong equations ', wrongEquations);
   // Loop through, multiply random numbers up to 9, push to array
   // for (let i = 0; i < correctEquations; i++) {
   //   firstNumber = 
@@ -47,7 +54,7 @@ function createEquations() {
   //   equationObject = { value: equation, evaluated: 'true' };
   //   equationsArray.push(equationObject);
   // }
-  // Loop through, mess with the equation results, push to array
+  // // Loop through, mess with the equation results, push to array
   // for (let i = 0; i < wrongEquations; i++) {
   //   firstNumber = 
   //   secondNumber = 
@@ -82,3 +89,73 @@ function createEquations() {
 //   bottomSpacer.classList.add('height-500');
 //   itemContainer.appendChild(bottomSpacer);
 // }
+
+
+
+//eventListeners
+
+function countdownStart(){
+  let countdownNumber = countdown.textContent;
+  setTimeout(()=>{
+    countdown.textContent=2;
+  }, 1000);
+  setTimeout(()=>{
+    countdown.textContent=1;
+  }, 2000);
+  setTimeout(()=>{
+    countdown.textContent='GO!';
+  }, 3000);
+  setTimeout(()=>{
+    showGamePage();
+  }, 4000);
+  
+  
+}
+
+//navigate from countdown to gamepage
+function showGamePage(){
+  countdownPage.hidden = true;
+  gamePage.hidden = false;
+}
+
+//navigate from splash to contdown
+function showCountdown(){
+  countdownPage.hidden = false;
+  splashPage.hidden = true;
+  countdownStart();
+}
+
+//get value from selected radio button
+function getRadioValue(){
+  let radioValue;
+  radioInputs.forEach((radioInput)=>{
+    if(radioInput.checked){
+      radioValue=radioInput.value; 
+    }
+  });
+  return radioValue;
+}
+
+//form that decides amount of questions
+function selectQuestionAmount(e){
+  e.preventDefault();
+  questionAmount= getRadioValue();
+  console.log('question amount: ', questionAmount);
+  if(questionAmount){
+    showCountdown();
+    createEquations();
+  }
+}
+
+startForm.addEventListener('click', () =>{
+  radioContainers.forEach((radioEl) =>{
+    //remove selected label styling
+    radioEl.classList.remove('selected-label');
+    //add it back if radio input is checked
+    if(radioEl.children[1].checked){  //TARGETS THE CHILDREN OF THE ELEMENT 
+      radioEl.classList.add('selected-label');
+    }
+  });
+});
+
+startForm.addEventListener('submit', selectQuestionAmount);
